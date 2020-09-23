@@ -136,7 +136,7 @@ resource "null_resource" "setup_env" {
     aws_instance.inst_app2,
     aws_instance.inst_ngn1,
     aws_instance.inst_ngn2,
-    aws_lb.front_end.id,
+    aws_lb.front_end,
   ]
 
   provisioner "local-exec" {
