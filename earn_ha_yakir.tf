@@ -105,7 +105,7 @@ resource "null_resource" "config_ansible_hosts_file" {
 
 
   provisioner "local-exec" {
-    command = "echo '${data.template_file.env_hosts.rendered}' > earn_hosts"
+    command = "echo '${data.template_file.env_hosts.rendered}' > ./earn_hosts"
   }
 
 
@@ -136,7 +136,7 @@ resource "null_resource" "setup_env" {
     aws_instance.inst_app2,
     aws_instance.inst_ngn1,
     aws_instance.inst_ngn2,
-    aws_lb.front_end
+    aws_lb.front_end.id,
   ]
 
   provisioner "local-exec" {
