@@ -23,6 +23,7 @@ Setup the AWS account info:
   export private_key_path="xxxxxxxxxxxxxxx"
   export AWS_REGION="region"
 
+Setup the aws_ec2 plugin for Ansible dynamic hosts.
 
 Execute:
 

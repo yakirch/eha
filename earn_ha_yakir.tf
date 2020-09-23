@@ -105,7 +105,7 @@ resource "null_resource" "config_ansible_hosts_file" {
 
 
   provisioner "local-exec" {
-    command = "echo '${data.template_file.env_hosts.rendered}' > /home/ubuntu/environment/ansible_env/earn_hosts"
+    command = "echo '${data.template_file.env_hosts.rendered}' > earn_hosts"
   }
 
 
@@ -135,7 +135,8 @@ resource "null_resource" "setup_env" {
     aws_instance.inst_app1,
     aws_instance.inst_app2,
     aws_instance.inst_ngn1,
-    aws_instance.inst_ngn2
+    aws_instance.inst_ngn2,
+    aws_lb.front_end
   ]
 
   provisioner "local-exec" {
@@ -147,7 +148,7 @@ resource "null_resource" "setup_env" {
     environment = {
       passed_in_hosts = "passed_in_hosts=tag_project_earn_ha"
       ansible_python_interpreter = "ansible_python_interpreter=python3"
-      setup_docker_play_file = "/home/ubuntu/environment/ha_earnix_draft3_with_vpc_dynamic_inventory/ansible/setup_docker.yml"
+      setup_docker_play_file = "./ansible/setup_docker.yml"
       
     }
   }
@@ -159,7 +160,7 @@ resource "null_resource" "setup_env" {
     environment = {
       passed_in_hosts = "passed_in_hosts=tag_type_app"
       ansible_python_interpreter = "ansible_python_interpreter=python3"
-      deploy_app_play_file = "/home/ubuntu/environment/ha_earnix_draft3_with_vpc_dynamic_inventory/ansible/deploy_simple-web.yml"
+      deploy_app_play_file = "./ansible/deploy_simple-web.yml"
     }
   }
 
@@ -170,7 +171,7 @@ resource "null_resource" "setup_env" {
       environment = {
       passed_in_hosts = "passed_in_hosts=tag_type_nginx"
       ansible_python_interpreter = "ansible_python_interpreter=python3"
-      deploy_nginx_play_file = "/home/ubuntu/environment/ha_earnix_draft3_with_vpc_dynamic_inventory/ansible/deploy_nginx.yml"
+      deploy_nginx_play_file = "./ansible/deploy_nginx.yml"
     }
 
 
@@ -217,19 +218,20 @@ variable "project" {
 
 
 variable "cust_ans_hosts_file" {
-  default = "/home/ubuntu/environment/ansible_env/earn_hosts"
+  default = "./earn_hosts"
 }
 
+
 variable "setup_docker_play_file" {
-  default = "/home/ubuntu/environment/ha_earnix_draft3_with_vpc_dynamic_inventory/ansible/setup_docker.yml "
+  default = "./ansible/setup_docker.yml "
 }
 
 variable "deploy_nginx_play_file" {
-  default = "/home/ubuntu/environment/ha_earnix_draft3_with_vpc_dynamic_inventory/ansible/deploy_nginx.yml"
+  default = "./ansible/deploy_nginx.yml"
 }
 
 variable "deploy_app_play_file" {
-  default = "/home/ubuntu/environment/ha_earnix_draft3_with_vpc_dynamic_inventory/ansible/deploy_simple-web.yml"
+  default = "./ansible/deploy_simple-web.yml"
 }
 
 
@@ -247,7 +249,7 @@ provider "aws" {
   #0.12.14 Interpolation-only expressions are deprecated: an expression like "${foo}" should be rewritten as just foo.
   #access_key = var.aws_access_key
   #secret_key = var.aws_secret_key
-  region     = "eu-west-1"
+  #region     = "eu-west-1"
   version = "~> 2.63"
 }
 
@@ -549,11 +551,7 @@ resource "aws_lb" "front_end" {
 
   enable_deletion_protection = false
 
- /* access_logs {
-    bucket  = aws_s3_bucket.lb_logs.bucket
-    prefix  = "test-lb"
-    enabled = true
-  }*/
+
 
   tags = {
     Name = "yakir_alb1"
