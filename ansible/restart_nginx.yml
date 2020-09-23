@@ -1,0 +1,18 @@
+#################################################
+# DO Community Playbooks: Docker
+#################################################
+---
+- hosts: server_nginx
+  become: true
+
+
+  tasks:
+
+    - name: restart nginx containers
+      docker_container:
+        name: nginx
+        image: nginx
+        state: started
+        restart: yes
+        ports:
+         - "8080:80"

@@ -1,0 +1,22 @@
+#################################################
+# DO Community Playbooks: Docker
+#################################################
+---
+- hosts: "{{ passed_in_hosts }}" #server_app
+  become: true
+
+
+  tasks:
+    - name: Pull simple-web Docker image
+      docker_image:
+        name: yeasy/simple-web
+        source: pull
+
+
+    - name: Create simple-web containers
+      docker_container:
+        name: simple-web
+        image: yeasy/simple-web
+        state: started
+        ports:
+         - "8081:80"

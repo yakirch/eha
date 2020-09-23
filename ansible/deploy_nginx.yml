@@ -1,0 +1,23 @@
+#################################################
+# DO Community Playbooks: Docker
+#################################################
+---
+- hosts: "{{ passed_in_hosts }}" #server_nginx
+  become: true
+
+
+  tasks:
+
+    - name: Pull nginx Docker image
+      docker_image:
+        name: nginx
+        source: pull
+
+
+    - name: Create nginx containers
+      docker_container:
+        name: nginx
+        image: nginx
+        state: started
+        ports:
+         - "8080:80"

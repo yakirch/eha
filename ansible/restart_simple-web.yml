@@ -1,0 +1,18 @@
+#################################################
+# DO Community Playbooks: Docker
+#################################################
+---
+- hosts: server_app
+  become: true
+
+
+  tasks:
+
+    - name: restart simple-web containers
+      docker_container:
+        name: simple-web
+        image: yeasy/simple-web
+        state: started
+        restart: yes
+        ports:
+         - "8081:80"
